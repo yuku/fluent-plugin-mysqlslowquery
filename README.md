@@ -2,21 +2,18 @@
 
 Fluent input plugin for  MySQL slow query log file.
 
+##Installation
+
+```shell
+% gem install fluent-plugin-mysqlslowquery
+```
+
 ##How to use
 
-Puts in_mysql_slow_query.rb to plugin directory.
+Edit conf file.
 
-```shell
-% cp in_mysql_slow_query.rb path/to/fluent/plugin
-```
-
-Edit setting file.
-
-```shell
-% edit fluent.conf
-```
-
-```
+```conf
+#/etc/fluentd/fluent.conf
 <source>
   type mysql_slow_query
   path /path/to/mysqld-slow.log
