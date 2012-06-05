@@ -17,10 +17,10 @@ class MySQLSlowQueryInput < Fluent::TailInput
         @_record["host"] = remain[1]
       elsif line[2, 11] == "Query_time:"
         sl = line.split
-        @_record["query_time"] = sl[2]
-        @_record["lock_time"] = sl[4]
-        @_record["rows_sent"] = sl[6]
-        @_record["rows_examined"] = sl[8]
+        @_record["query_time"] = sl[2].to_f
+        @_record["lock_time"] = sl[4].to_f
+        @_record["rows_sent"] = sl[6].to_i
+        @_record["rows_examined"] = sl[8].to_i
       end
     elsif not line.upcase.start_with?('USE') and not line.upcase.start_with?('SET')
       @_record["sql"] = line
