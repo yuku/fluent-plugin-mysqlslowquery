@@ -1,33 +1,50 @@
-class MySQLSlowQueryInput < Fluent::TailInput
-  Fluent::Plugin.register_input('mysql_slow_query', self)
+#
+# in_mysql_slow_query
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+require "myslog"
+
+module Fluent
+
+class MySQLSlowQueryInput < TailInput
+  Plugin.register_input('mysql_slow_query', self)
 
   def configure_parser(conf)
-    @_time = Time.new.to_i
-    @_record = {}
+    @parser = MySlog.new
   end
 
-  def parse_line(line)
-    if line.start_with?("#")
-      if line[2, 5] == "Time:"
-        remain = line[7..-1].strip
-        @_time = Time.strptime(remain, '%y%m%d %H:%M:%S').to_i
-      elsif line[2, 10] == "User@Host:"
-        remain = line[12..-1].split("@").map{|s| s.strip}
-        @_record["user"] = remain[0]
-        @_record["host"] = remain[1]
-      elsif line[2, 11] == "Query_time:"
-        sl = line.split
-        @_record["query_time"] = sl[2].to_f
-        @_record["lock_time"] = sl[4].to_f
-        @_record["rows_sent"] = sl[6].to_i
-        @_record["rows_examined"] = sl[8].to_i
+  def receive_lines(lines)
+    es = MultiEventStream.new
+    @parser.divide(lines).each do |record|
+      begin
+        record = @parser.parse_record(record)
+        if time = record.delete(:date)
+          time = time.to_i
+        else
+          time = Time.now.to_i
+        end
+        es.add(time, record)
+      rescue
+        $log.warn record, :error=>$!.to_s
+        $log.debug_backtrace
       end
-    elsif not line.upcase.start_with?('USE') and not line.upcase.start_with?('SET')
-      @_record["sql"] = line
-      n_record = @_record.clone
-      @_record = {}
-      return @_time, n_record
     end
-    return nil, nil
+
+    unless es.empty?
+      Engine.emit_stream(@tag, es)
+    end
   end
+end
+
 end
