@@ -33,17 +33,17 @@ SET timestamp=1317619058;
 SELECT * FROM life;
 ```
 
-Then following JSON is going to be made.
+Record
 
 ```json
 {
-    "time": "2011-10-03 14:17:38",
     "user": "root[root]",
-    "host": "localhost []",
+    "host": "localhost",
+    "host_ip": "",
     "query_time": 0.000270,
     "lock_time": 0.000097,
     "rows_sent": 1,
     "rows_examined": 0,
-    "sql":  "select * from life;"
+    "sql": "SET timestamp=1317619058; SELECT * FROM life;"
 }
 ```
