@@ -42,7 +42,10 @@ class MySQLSlowQueryInput < TailInput
     end
 
     unless es.empty?
-      Engine.emit_stream(@tag, es)
+      begin
+        Engine.emit_stream(@tag, es)
+      rescue 
+      end
     end
   end
 end
