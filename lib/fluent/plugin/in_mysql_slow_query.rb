@@ -47,7 +47,7 @@ class MySQLSlowQueryInput < TailInput
     rescue
       # ignore errors. Engine shows logs and backtraces.
     end
-  end # es
+  end #es
 
   end
 end
