@@ -41,14 +41,12 @@ class MySQLSlowQueryInput < TailInput
       end
     end
 
-  unless es.empty?
-    begin
-      Engine.emit_stream(@tag, es)
-    rescue
-      # ignore errors. Engine shows logs and backtraces.
+    unless es.empty?
+      begin
+        Engine.emit_stream(@tag, es)
+      rescue 
+      end
     end
-  end # es
-
   end
 end
 
