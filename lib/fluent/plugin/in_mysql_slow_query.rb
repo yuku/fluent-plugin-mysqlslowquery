@@ -21,6 +21,8 @@ class MySQLSlowQueryInput < TailInput
   Plugin.register_input('mysql_slow_query', self)
 
   def configure_parser(conf)
+    @last_db = File.open(@path).grep(/^use /).last.match(/^use ([^;]+)/)[1]
+    raise Fluent::ConfigError, "use clause could not be located in #{@path}" if @last_db.nil? || @last_db.empty?
     @parser = MySlog.new
   end
 
@@ -34,6 +36,7 @@ class MySQLSlowQueryInput < TailInput
         else
           time = Time.now.to_i
         end
+        record[:db] = @last_db if record[:db].nil? || record[:db].empty?
         es.add(time, record)
       rescue
         $log.warn record, :error=>$!.to_s
@@ -44,7 +47,7 @@ class MySQLSlowQueryInput < TailInput
     unless es.empty?
       begin
         Engine.emit_stream(@tag, es)
-      rescue 
+      rescue
       end
     end
   end
