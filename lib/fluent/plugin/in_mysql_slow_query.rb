@@ -37,15 +37,15 @@ class MySQLSlowQueryInput < TailInput
     es = MultiEventStream.new
     @parser.divide(lines).each do |record|
       begin
-        record = @parser.parse_record(record)
-        if time = record.delete(:date)
+        record = stringify_keys @parser.parse_record(record)
+        if time = record.delete('date')
           time = time.to_i
         else
           time = Time.now.to_i
         end
 
-        if record[:db].nil? || record[:db].empty?
-          record[:db] = @last_use_database ? @last_use_database : search_last_use_database()
+        if record['db'].nil? || record['db'].empty?
+          record['db'] = @last_use_database ? @last_use_database : search_last_use_database()
         end
 
         es.add(time, record)
@@ -60,6 +60,16 @@ class MySQLSlowQueryInput < TailInput
         Engine.emit_stream(@tag, es)
       rescue
       end
+    end
+
+    private
+
+    def stringify_keys(record)
+      result = {}
+      record.each_key do |key|
+        result[key.to_s] = record[key]
+      end
+      result
     end
   end
 end
