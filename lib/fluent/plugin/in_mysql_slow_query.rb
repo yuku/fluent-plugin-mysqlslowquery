@@ -61,16 +61,16 @@ class MySQLSlowQueryInput < TailInput
       rescue
       end
     end
+  end
 
-    private
+  private
 
-    def stringify_keys(record)
-      result = {}
-      record.each_key do |key|
-        result[key.to_s] = record[key]
-      end
-      result
+  def stringify_keys(record)
+    result = {}
+    record.each_key do |key|
+      result[key.to_s] = record[key]
     end
+    result
   end
 end
 
