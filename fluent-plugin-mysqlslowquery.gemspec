@@ -3,7 +3,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["taka84u9@gmail.com"]
   gem.description   = "Fluent input plugin for MySQL slow query log file."
   gem.summary       = "Fluent input plugin for MySQL slow query log file."
-  gem.homepage      = "https://github.com/taka84u9/fluent-plugin-mysqlslowquery"
+  gem.homepage      = "https://github.com/yuku-t/fluent-plugin-mysqlslowquery"
   gem.license       = "MIT"
 
   gem.files         = `git ls-files`.split($\)
