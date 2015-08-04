@@ -57,7 +57,7 @@ class MySQLSlowQueryInput < TailInput
 
     unless es.empty?
       begin
-        Engine.emit_stream(@tag, es)
+        router.emit_stream(@tag, es)
       rescue
       end
     end
