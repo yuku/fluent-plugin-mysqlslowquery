@@ -15,6 +15,6 @@ Gem::Specification.new do |gem|
   gem.name          = "fluent-plugin-mysqlslowquery"
   gem.require_paths = ["lib"]
   gem.version       = "0.0.6"
-  gem.add_dependency "fluentd", "~> 0.12"
+  gem.add_dependency "fluentd", [">= 0.12.0", "< 2"]
   gem.add_dependency "myslog", "~> 0.0"
 end
