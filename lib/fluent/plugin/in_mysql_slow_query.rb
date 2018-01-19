@@ -14,11 +14,12 @@
 # limitations under the License.
 #
 require "myslog"
+require "fluent/plugin/in_tail"
 
-module Fluent
+module Fluent::Plugin
 
-class MySQLSlowQueryInput < TailInput
-  Plugin.register_input('mysql_slow_query', self)
+class MySQLSlowQueryInput < Fluent::Plugin::TailInput
+  Fluent::Plugin.register_input('mysql_slow_query', self)
 
   def configure_parser(conf)
     @parser = MySlog.new
