@@ -18,11 +18,11 @@ require "fluent/plugin/in_tail"
 
 module Fluent::Plugin
 
-class MySQLSlowQueryInput < Fluent::Plugin::TailInput
+class MySQLSlowQueryInput < TailInput
   Fluent::Plugin.register_input('mysql_slow_query', self)
 
-  def configure_parser(conf)
-    @parser = MySlog.new
+  def parser_create(conf)
+    return MySlog.new
   end
 
   def search_last_use_database
@@ -34,8 +34,8 @@ class MySQLSlowQueryInput < Fluent::Plugin::TailInput
     end
   end
 
-  def receive_lines(lines)
-    es = MultiEventStream.new
+  def receive_lines(lines, tail_watcher)
+    es = Fluent::MultiEventStream.new
     @parser.divide(lines).each do |record|
       begin
         record = stringify_keys @parser.parse_record(record)
