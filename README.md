@@ -18,6 +18,9 @@ Edit conf file.
   type mysql_slow_query
   path /path/to/mysqld-slow.log
   tag mysqld.slow_query
+   <parse>
+     @type none
+   </parse>
 </source>
 ```
 
